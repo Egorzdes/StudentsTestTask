@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Bootstrap CSS -->
+    <link rel="shortcut icon" type="image/png" href="http://img.icons8.com/color/48/000000/spring-logo.png"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+          integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
+            integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
+            crossorigin="anonymous"></script>
+
+
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        body {
+            overflow: auto;
+        }
+
+        main {
+            min-height: 100%;
+        }
+
+        .table-striped > tbody > tr:nth-child(2n) > td, .table-striped > tbody > tr:nth-child(2n) > th {
+            background-color: gainsboro;
+        }
+
+        .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+            background-color: honeydew;
+        }
+    </style>
+
+    <title>Учащиеся</title>
+
+</head>
+<body>
+
+
+<div class="row bg-light h-100">
+    <!-- left navbar-->
+
+
+    <!-- central panel-->
+    <div class="col-lg-12 bg-light pt-4 pr-5 w-100">
+        <main>
+
+            <!-- head of central panel-->
+            <h1 align="center">Главная панель</h1>
+            <br><br>
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#all" role="tab"
+                       aria-controls="home" aria-selected="true">
+                        Все студенты</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#new" role="tab"
+                       aria-controls="profile" aria-selected="false">
+                        Добавить студента</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+
+
+                <div class="tab-pane fade show active border rounded" id="all" role="tabpanel"
+                     aria-labelledby="home-tab">
+                    <h3 class="ml-4">Список студентов</h3>
+                    <div class=" bg-white p-4 border border-left-0 border-right-0 border-bottom-0">
+                        <table class="table table-sm table-striped bg-white">
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Имя</th>
+                                <th scope="col">Фамилия</th>
+                                <th scope="col">Отчество</th>
+                                <th scope="col">Дата Рождения</th>
+                                <th scope="col">Группа</th>
+                                <th scope="col">Удалить</th>
+
+                            </tr>
+
+                            <tr th:each="student : ${students}">
+                                <td th:utext="${student.id}">ID</td>
+                                <td th:utext="${student.firstName}">getName</td>
+                                <td th:utext="${student.lastName}">getLastName</td>
+                                <td th:utext="${student.middleName}">getMiddleName</td>
+                                <td th:utext="${student.dateOfBirth}">getYears</td>
+                                <td th:utext="${student.groupNumber}">getGroupNumber</td>
+                                </td>
+
+                                <td>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal"
+                                            data-target="#deleteModal"
+                                            th:data-did="${student.id}"
+                                            th:data-dname="${student.firstName}"
+                                            th:data-dlast="${student.lastName}"
+                                            th:data-dmiddle="${student.middleName}"
+                                            th:data-dyears="${student.dateOfBirth}"
+                                            th:data-dgroup="${student.groupNumber}">
+
+                                        DELETE
+                                    </button>
+                                </td>
+                                <!-- button delete end-->
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <!-- tab with table END-->
+
+                <!-- tab for create new user START-->
+                <div class="tab-pane fade border rounded" id="new" role="tabpanel" aria-labelledby="profile-tab">
+                    <h3 class="ml-4">Данные студента</h3>
+                    <div class=" bg-white p-4 border border-left-0 border-right-0 border-bottom-0">
+
+
+                        <form class="row justify-content-center mx-auto" style="width: 270px;" th:method="POST"
+                              th:action="@{/main/}">
+                            <label class="text-center font-weight-bold" style="width: 270px;" for="name">Введите
+                                имя: </label>
+                            <input class="mb-3" style="width: 270px;" type="text" pattern="[A-Za-z]{2,}"
+                                   th:field="${newstudent.firstName}" id="name" required/>
+
+                            <label class="text-center font-weight-bold" style="width: 270px;" for="lastName">Введите
+                                фамилию: </label>
+                            <input class="mb-3" style="width: 270px;" type="text" pattern="[A-Za-z]{2,}"
+                                   th:field="${newstudent.lastName}" id="lastName" required/>
+
+                            <label class="text-center font-weight-bold" style="width: 270px;" for="middleName">Введите
+                                отчество: </label>
+                            <input class="mb-3" style="width: 270px;" type="text" pattern="[A-Za-z]{2,}"
+                                   th:field="${newstudent.middleName}"
+                                   id="middleName" required/>
+
+                            <label class="text-center font-weight-bold" style="width: 270px;" for="years">Введите дату
+                                рождения: </label>
+                            <input class="mb-3" style="width: 270px;" type="date" th:field="${newstudent.dateOfBirth}"
+                                   id="years" required/>
+
+
+                            <label class="text-center font-weight-bold" style="width: 270px;" for="groupNumber">Введите
+                                группу: </label>
+                            <input class="mb-3" style="width: 270px;" type="text"
+                                   th:field="${newstudent.groupNumber}" id="groupNumber" required/>
+
+
+                            <input type="submit" class="btn btn btn-success " style="width: 150px;" value="Создать"/>
+                        </form>
+                    </div>
+                </div>
+                <!-- tab for create new user END-->
+            </div>
+        </main>
+    </div>
+</div>
+
+
+<!-- DELETE MODAL WINDOW BEGIN-->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="row justify-content-center mx-auto" style="width: 270px;" id="delete_form"
+                      th:method="DELETE" th:action="@{/main/iid}">
+
+                    <div class="form-group">
+                        <label for="dstudent-id" class="text-center font-weight-bold" style="width: 270px;">ID</label>
+                        <input type="text" class="form-control" id="dstudent-id" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dstudent-name" class="text-center font-weight-bold"
+                               style="width: 270px;">Имя</label>
+                        <input type="text" th:field="${newstudent.firstName}"
+                               class="form-control" id="dstudent-name" disabled>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label for="dstudent-lastName" class="text-center font-weight-bold"
+                               style="width: 270px;">Фамилия</label>
+                        <input type="text" th:field="${newstudent.lastName}"
+                               class="form-control" id="dstudent-lastName" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dstudent-middleName" class="text-center font-weight-bold" style="width: 270px;">Отчество</label>
+                        <input type="text" th:field="${newstudent.middleName}"
+                               class="form-control" id="dstudent-middleName" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dstudent-years" class="text-center font-weight-bold" style="width: 270px;">Дата
+                            рождения</label>
+                        <input type="date" th:field="${newstudent.dateOfBirth}" class="form-control"
+                               id="dstudent-years" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dstudent-group" class="text-center font-weight-bold"
+                               style="width: 270px;">Группа</label>
+                        <input type="text" th:field="${newstudent.groupNumber}" class="form-control"
+                               id="dstudent-group" disabled>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                <input type="submit" class="btn btn-danger" form="delete_form" value="Удалить"/>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!--Script for delete modal Start-->
+<script>
+    $('#deleteModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget)
+
+        var id = button.data('did')
+        var name = button.data('dname')
+        var last = button.data('dlast')
+        var middle = button.data('dmiddle')
+        var years = button.data('dyears')
+        var group = button.data('dgroup')
+
+
+        var modal = $(this)
+
+        modal.find('#dstudent-id').val(id)
+        modal.find('#delete_form').attr('action', '/main/' + id)
+        modal.find('#dstudent-name').val(name)
+        modal.find('#dstudent-lastName').val(last)
+        modal.find('#dstudent-middleName').val(middle)
+        modal.find('#dstudent-years').val(years)
+        modal.find('#dstudent-group').val(group)
+
+
+    })
+</script>
+
+
+</body>
+</html>
